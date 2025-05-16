@@ -23,42 +23,49 @@
                 const projects = data.data;
                 const tbody = document.querySelector('#projectTable tbody');
 
-                let domString = '';
                 const rowCount = Math.ceil(projects.length / 6);
 
                 for (let i = 0; i < rowCount; i++) {
-                    domString += '<tr>';
+                    const row = document.createElement('tr');
 
                     for (let j = 0; j < 6; j++) {
+                        const cell = document.createElement('td');
                         const projectIndex = i * 6 + j;
 
                         if (projectIndex < projects.length) {
                             const project = projects[projectIndex];
 
-                            domString += `
-                                <td>
-                                    <div align="center">
-                                        <img src="${project.logo}" height="60" />
-                                        <div align="center">
-                                            <a href="//lxdao.io/projects/${project.id}" target="_blank">${project.name}</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            `;
-                        } else {
-                            domString += '<td></td>';
+                            // 创建外层div
+                            const containerDiv = document.createElement('div');
+                            containerDiv.setAttribute('align', 'center');
+
+                            // 添加项目Logo
+                            containerDiv.innerHTML = `<img src="${project.logo}" width="60" height="60" object-fit="cover" />`;
+
+                            // 创建名称容器div
+                            const nameDivContainer = document.createElement('div');
+                            nameDivContainer.setAttribute('align', 'center');
+
+                            // 添加项目名称作为链接
+                            const nameLink = document.createElement('a');
+                            nameLink.href = `//lxdao.io/projects/${project.id}`;
+                            nameLink.textContent = project.name;
+                            nameLink.target = '_blank';
+
+                            nameDivContainer.appendChild(nameLink);
+                            containerDiv.appendChild(nameDivContainer);
+
+                            cell.appendChild(containerDiv);
                         }
+
+                        row.appendChild(cell);
                     }
 
-                    domString += '</tr>';
+                    tbody.appendChild(row);
                 }
 
-                // 打印DOM结构到控制台
-                console.log(`<table><tbody>${domString}</tbody></table>`);
-
-                // 插入DOM
-                tbody.innerHTML = domString;
-
+                const res = projectTable.innerHTML.replaceAll(` object-fit="cover">`, ` object-fit="cover"/>`);
+                console.log(res);
             } catch (error) {
                 console.error('Error loading projects:', error);
                 document.querySelector('#projectTable').innerHTML = '加载失败，请稍后重试';
