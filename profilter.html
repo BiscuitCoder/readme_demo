@@ -65,7 +65,7 @@
                 }
 
                 const res = projectTable.innerHTML.replaceAll(` object-fit="cover">`, ` object-fit="cover"/>`);
-                console.log(res);
+                console.log(`<table>${res}</table>`);
             } catch (error) {
                 console.error('Error loading projects:', error);
                 document.querySelector('#projectTable').innerHTML = '加载失败，请稍后重试';
