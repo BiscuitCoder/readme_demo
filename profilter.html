@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+            width: 16.66%;
+            vertical-align: middle;
+        }
+        
+        .project-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .project-name {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>项目列表</h1>
+        <table id="projectTable">
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadProjects() {
+            try {
+                const response = await fetch('list.json');
+                const data = await response.json();
+                const projects = data.data;
+                const tbody = document.querySelector('#projectTable tbody');
+
+                const rowCount = Math.ceil(projects.length / 6);
+
+                for (let i = 0; i < rowCount; i++) {
+                    const row = document.createElement('tr');
+
+                    for (let j = 0; j < 6; j++) {
+                        const cell = document.createElement('td');
+                        const projectIndex = i * 6 + j;
+
+                        if (projectIndex < projects.length) {
+                            const project = projects[projectIndex];
+
+                            // 使用innerHTML来确保img标签以/结尾
+                            cell.innerHTML = `<img src="${project.logo}" class="project-logo" />`;
+
+                            // 添加项目名称
+                            const name = document.createElement('div');
+                            name.textContent = project.name;
+                            name.className = 'project-name';
+                            cell.appendChild(name);
+                        }
+
+                        row.appendChild(cell);
+                    }
+
+                    tbody.appendChild(row);
+                }
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                document.querySelector('#projectTable').innerHTML = '加载失败，请稍后重试';
+            }
+        }
+
+        window.onload = loadProjects;
+    </script>
+</body>
+
+</html>
